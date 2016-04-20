@@ -1,6 +1,3 @@
-" vimrc to be used on a windows machine
-
-
 " enable syntax highlighting
 syntax enable
 
@@ -41,13 +38,16 @@ set guifont=Hack:h11
 
 " ConEmu
 " Found at http://stackoverflow.com/questions/20034851/vim-encoding-unicode-in-terminal-under-windows/25073399#25073399
+" Requires to run chcp 65001 before starting vim.
 if !empty($CONEMUBUILD)
     set termencoding=utf8
     set term=xterm
     set t_Co=256
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
+    colorscheme Duna
 endif
+
 
 if has('gui_running')
     colorscheme Evolution
