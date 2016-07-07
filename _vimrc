@@ -36,32 +36,40 @@ set runtimepath+=~/.vim/
 
 set guifont=Hack:h11
 
+au BufRead,BufNewFile *.es6 set filetype=javascript
+
+
 " ConEmu
 " Found at http://stackoverflow.com/questions/20034851/vim-encoding-unicode-in-terminal-under-windows/25073399#25073399
-" Requires to run chcp 65001 before starting vim.
 if !empty($CONEMUBUILD)
     set termencoding=utf8
     set term=xterm
     set t_Co=256
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
-    colorscheme Duna
+    colorscheme gruvbox 
 endif
 
 
 if has('gui_running')
-    colorscheme Evolution
+    colorscheme gruvbox
 endif
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#show_buffers = 1 
+let g:airline#extensions#tabline#show_splits = 0
 let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_tab_type = 0
 
 let g:airline_powerline_fonts = 1
-let g:airline_theme = 'laederon'
+let g:airline_theme = 'gruvbox'
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+
+let g:move_key_modifier = 'C'
+let g:airline#extensions#tabline#fnamemod = ':t'
 
 " Note: Skip initialization for vim-tiny or vim-small.
  if 0 | endif
@@ -92,6 +100,9 @@ let g:ctrlp_cmd = 'CtrlP'
  NeoBundle 'ctrlpvim/ctrlp.vim'
  NeoBundle 'tpope/vim-markdown'
  NeoBundle 'vim-scripts/SyntaxRange'
+ NeoBundle 'airblade/vim-gitgutter'
+ NeoBundle 'matze/vim-move'
+ NeoBundle 'morhetz/gruvbox'
 
  call neobundle#end()
 
@@ -104,3 +115,8 @@ let g:ctrlp_cmd = 'CtrlP'
 
 map <C-n> :NERDTreeTabsToggle<CR>
 
+"list the active buffers.
+nnoremap <F5> :buffers<CR>:buffer<Space>
+
+"remove all the trailing spaces.
+nnoremap <silent> <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
