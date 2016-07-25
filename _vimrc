@@ -1,6 +1,10 @@
 " enable syntax highlighting
 syntax enable
 
+"set fillchars+=vert:
+
+set background=dark
+
 " status bar always visible
 set laststatus=2
 
@@ -11,7 +15,7 @@ set backspace=2
 set number
 
 " set tabs to have 4 spaces
-set ts=4
+set ts=4 sw=4 et
 
 " indent when moving to the next line while writing code
 set autoindent
@@ -29,7 +33,7 @@ set cursorline
 set showmatch
 
 " enable all Python syntax highlighting features
-let python_highlight_all = 1
+" let python_highlight_all = 1
 
 set encoding=utf-8
 set runtimepath+=~/.vim/
@@ -38,6 +42,7 @@ set guifont=Hack:h11
 
 au BufRead,BufNewFile *.es6 set filetype=javascript
 
+execute pathogen#infect()
 
 " ConEmu
 " Found at http://stackoverflow.com/questions/20034851/vim-encoding-unicode-in-terminal-under-windows/25073399#25073399
@@ -47,20 +52,21 @@ if !empty($CONEMUBUILD)
     set t_Co=256
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
-    colorscheme gruvbox 
+    colorscheme gruvbox
 endif
-
 
 if has('gui_running')
     colorscheme gruvbox
 endif
 
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 1 
+let g:airline#extensions#tabline#show_buffers = 1
 let g:airline#extensions#tabline#show_splits = 0
 let g:airline#extensions#tabline#show_tabs = 1
 let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_tab_type = 0
+
+let g:airline#extensions#tabline#fnamemod = ':t'
 
 let g:airline_powerline_fonts = 1
 let g:airline_theme = 'gruvbox'
@@ -69,49 +75,51 @@ let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
 let g:move_key_modifier = 'C'
-let g:airline#extensions#tabline#fnamemod = ':t'
 
 " Note: Skip initialization for vim-tiny or vim-small.
- if 0 | endif
+if 0 | endif
 
- if has('vim_starting')
-   if &compatible
-     set nocompatible               " Be iMproved
-   endif
+if has('vim_starting')
+if &compatible
+ set nocompatible               " Be iMproved
+endif
 
-   " Required:
-   set runtimepath+=~/.vim/bundle/neobundle.vim/
- endif
+" Required:
+set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
 
- " Required:
- call neobundle#begin(expand('~/.vim/bundle/'))
+" Required:
+call neobundle#begin(expand('~/.vim/bundle/'))
 
- " Let NeoBundle manage NeoBundle
- " Required:
- NeoBundleFetch 'Shougo/neobundle.vim'
+" Let NeoBundle manage NeoBundle
+" Required:
+NeoBundleFetch 'Shougo/neobundle.vim'
 
+" My Bundles here:
+NeoBundle 'bling/vim-airline'
+NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'jistr/vim-nerdtree-tabs'
+NeoBundle 'leafgarland/typescript-vim'
+NeoBundle 'PProvost/vim-ps1'
+NeoBundle 'ctrlpvim/ctrlp.vim'
+NeoBundle 'tpope/vim-markdown'
+NeoBundle 'vim-scripts/SyntaxRange'
+NeoBundle 'airblade/vim-gitgutter'
+NeoBundle 'matze/vim-move'
+NeoBundle 'morhetz/gruvbox'
+NeoBundle 'honza/vim-snippets'
+NeoBundle 'MarcWeber/vim-addon-mw-utils'
+Neobundle 'tomtom/tlib_vim'
+NeoBundle 'garbas/vim-snipmate'
 
- " My Bundles here:
- NeoBundle 'bling/vim-airline'
- NeoBundle 'scrooloose/nerdtree'
- NeoBundle 'jistr/vim-nerdtree-tabs'
- NeoBundle 'leafgarland/typescript-vim'
- NeoBundle 'PProvost/vim-ps1'
- NeoBundle 'ctrlpvim/ctrlp.vim'
- NeoBundle 'tpope/vim-markdown'
- NeoBundle 'vim-scripts/SyntaxRange'
- NeoBundle 'airblade/vim-gitgutter'
- NeoBundle 'matze/vim-move'
- NeoBundle 'morhetz/gruvbox'
+call neobundle#end()
 
- call neobundle#end()
+" If there are uninstalled bundles found on startup,
+" this will conveniently prompt you to install them.
+NeoBundleCheck
 
- " If there are uninstalled bundles found on startup,
- " this will conveniently prompt you to install them.
- NeoBundleCheck
-
- " Required:
- filetype plugin indent on
+" Required:
+filetype plugin indent on
 
 map <C-n> :NERDTreeTabsToggle<CR>
 
@@ -120,3 +128,21 @@ nnoremap <F5> :buffers<CR>:buffer<Space>
 
 "remove all the trailing spaces.
 nnoremap <silent> <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+fun! SetupVAM()
+  let c = get(g:, 'vim_addon_manager', {})
+  let g:vim_addon_manager = c
+  let c.plugin_root_dir = expand('$HOME', 1) . '/.vim/vim-addons'
+  let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
+  " let g:vim_addon_manager = { your config here see "commented version" example and help
+  if !isdirectory(c.plugin_root_dir.'/vim-addon-manager/autoload')
+    execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '
+                \       shellescape(c.plugin_root_dir.'/vim-addon-manager', 1)
+  endif
+  call vam#ActivateAddons([the plugin names], {'auto_install' : 0})
+  " Also See "plugins-per-line" below
+endfun
+call SetupVAM()
+
+ActivateAddons vim-snippets snipmate
+
