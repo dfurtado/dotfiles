@@ -3,7 +3,7 @@ syntax enable
 
 "set fillchars+=vert:
 
-set background=dark
+set background=light
 
 " status bar always visible
 set laststatus=2
@@ -109,8 +109,9 @@ NeoBundle 'matze/vim-move'
 NeoBundle 'morhetz/gruvbox'
 NeoBundle 'honza/vim-snippets'
 NeoBundle 'MarcWeber/vim-addon-mw-utils'
-Neobundle 'tomtom/tlib_vim'
+NeoBundle 'tomtom/tlib_vim'
 NeoBundle 'garbas/vim-snipmate'
+NeoBundle 'scrooloose/syntastic'
 
 call neobundle#end()
 
@@ -129,20 +130,52 @@ nnoremap <F5> :buffers<CR>:buffer<Space>
 "remove all the trailing spaces.
 nnoremap <silent> <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 
+" put this line first in ~/.vimrc
+set nocompatible | filetype indent plugin on | syn on
+
 fun! SetupVAM()
   let c = get(g:, 'vim_addon_manager', {})
   let g:vim_addon_manager = c
   let c.plugin_root_dir = expand('$HOME', 1) . '/.vim/vim-addons'
+
+  " Force your ~/.vim/after directory to be last in &rtp always:
+  " let g:vim_addon_manager.rtp_list_hook = 'vam#ForceUsersAfterDirectoriesToBeLast'
+
+  " most used options you may want to use:
+  " let c.log_to_buf = 1
+  " let c.auto_install = 0
   let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
-  " let g:vim_addon_manager = { your config here see "commented version" example and help
   if !isdirectory(c.plugin_root_dir.'/vim-addon-manager/autoload')
     execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '
-                \       shellescape(c.plugin_root_dir.'/vim-addon-manager', 1)
+        \       shellescape(c.plugin_root_dir.'/vim-addon-manager', 1)
   endif
-  call vam#ActivateAddons([the plugin names], {'auto_install' : 0})
-  " Also See "plugins-per-line" below
+
+  " This provides the VAMActivate command, you could be passing plugin names, too
+  call vam#ActivateAddons([], {})
 endfun
 call SetupVAM()
 
-ActivateAddons vim-snippets snipmate
+" ACTIVATING PLUGINS
 
+" OPTION 1, use VAMActivate
+" VAMActivate PLUGIN_NAME PLUGIN_NAME ..
+
+" OPTION 2: use call vam#ActivateAddons
+" call vam#ActivateAddons([PLUGIN_NAME], {})
+" use <c-x><c-p> to complete plugin names
+
+" OPTION 3: Create a file ~/.vim-scripts putting a PLUGIN_NAME into each line
+" See lazy loading plugins section in README.md for details
+" call vam#Scripts('~/.vim-scripts', {'tag_regex': '.*'})
+
+"ActivateAddons vim-snippets snipmate
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_checkers = ['jshint']
