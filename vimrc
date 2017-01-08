@@ -1,4 +1,7 @@
-colorscheme maui
+
+set background=dark
+
+colorscheme lyla
 
 set tabstop=4
 
@@ -49,6 +52,7 @@ NeoBundle 'edkolev/tmuxline.vim'
 NeoBundle 'Xuyuanp/nerdtree-git-plugin'
 NeoBundle 'jistr/vim-nerdtree-tabs'
 NeoBundle 'asciidoc/vim-asciidoc'
+NeoBundle 'morhetz/gruvbox'
 
 call neobundle#end()
 
@@ -57,12 +61,26 @@ filetype plugin indent on
 NeoBundleCheck
 
 let g:airline_powerline_fonts=1
-
 let g:airline#extensions#tabline#enabled = 1
-
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_tab_type = 0
 let g:airline#extensions#tabline#fnamemod = ':t'
 
-let g:airline_theme = 'laederon'
+let g:airline_powerline_fonts = 1
+let g:airline_theme = 'gruvbox'
+
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$|\v[\/](node_modules)$',
+  \ 'file': '\v\.(exe|so|dll|swp|pyc|o)$',
+  \ }
+
+let g:move_key_modifier = 'C'
 
 let g:NERDTreeIndicatorMapCustom = {
     \ "Modified"  : "✹",
@@ -75,10 +93,6 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Clean"     : "✔︎",
     \ "Unknown"   : "?"
     \ }
-
-"autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 "toggle the file tree.
 map <C-n> :NERDTreeTabsToggle<CR>
