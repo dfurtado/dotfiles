@@ -1,9 +1,8 @@
+
 " enable syntax highlighting
 syntax enable
 
-"set fillchars+=vert:
-
-set background=light
+set background=dark
 
 " status bar always visible
 set laststatus=2
@@ -33,31 +32,20 @@ set cursorline
 set showmatch
 
 " enable all Python syntax highlighting features
-" let python_highlight_all = 1
+let python_highlight_all = 1
 
 set encoding=utf-8
 set runtimepath+=~/.vim/
 
-set guifont=Hack:h11
+set guifont=Hack:h10
+
+let mapleader=","
 
 au BufRead,BufNewFile *.es6 set filetype=javascript
 
 execute pathogen#infect()
 
-" ConEmu
-" Found at http://stackoverflow.com/questions/20034851/vim-encoding-unicode-in-terminal-under-windows/25073399#25073399
-if !empty($CONEMUBUILD)
-    set termencoding=utf8
-    set term=xterm
-    set t_Co=256
-    let &t_AB="\e[48;5;%dm"
-    let &t_AF="\e[38;5;%dm"
-    colorscheme gruvbox
-endif
-
-if has('gui_running')
-    colorscheme gruvbox
-endif
+colorscheme gruvbox
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 1
@@ -65,6 +53,8 @@ let g:airline#extensions#tabline#show_splits = 0
 let g:airline#extensions#tabline#show_tabs = 1
 let g:airline#extensions#tabline#show_tab_nr = 0
 let g:airline#extensions#tabline#show_tab_type = 0
+
+let g:airline_section_y = 'Buffer #%{bufnr("%")}'
 
 let g:airline#extensions#tabline#fnamemod = ':t'
 
@@ -112,6 +102,11 @@ NeoBundle 'MarcWeber/vim-addon-mw-utils'
 NeoBundle 'tomtom/tlib_vim'
 NeoBundle 'garbas/vim-snipmate'
 NeoBundle 'scrooloose/syntastic'
+NeoBundle 'Xuyuanp/nerdtree-git-plugin'
+NeoBundle 'davidhalter/jedi-vim'
+NeoBundle 'scrooloose/nerdcommenter'
+NeoBundle 'skammer/vim-css-color'
+NeoBundle 'tpope/vim-fugitive'
 
 call neobundle#end()
 
@@ -170,6 +165,25 @@ call SetupVAM()
 
 "ActivateAddons vim-snippets snipmate
 
+" NERDTree settings
+let NERDTreeIgnore = ['\.pyc$']
+let g:nerdtree_tabs_open_on_gui_startup=0
+let g:NERDTreeHijackNetrw=0
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "*",
+    \ "Staged"    : "+",
+    \ "Untracked" : "u",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "X",
+    \ "Dirty"     : "x",
+    \ "Clean"     : "v",
+    \ "Unknown"   : "?"
+    \ }
+
+" Syntastic settings
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -178,4 +192,87 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = ['jshint']
+let g:syntastic_javascript_checkers = ['eshint']
+
+" Jedi-vim settings
+let g:jedi#use_splits_not_buffers = "bottom"
+let g:jedi#popup_on_dot = 0
+let g:jedi#popup_select_first = 0
+
+let g:jedi#goto_command = "<leader>d"
+let g:jedi#goto_assignments_command = "<leader>g"
+let g:jedi#goto_definitions_command = ""
+let g:jedi#documentation_command = "K"
+let g:jedi#usages_command = "<leader>n"
+let g:jedi#completions_command = "<C-Space>"
+let g:jedi#rename_command = "<leader>r"
+
+" BufOnly.vim  -  Delete all the buffers except the current/named buffer.
+"
+" Copyright November 2003 by Christian J. Robinson <infynity@onewest.net>
+"
+" Distributed under the terms of the Vim license.  See ":help license".
+"
+" Usage:
+"
+" :Bonly / :BOnly / :Bufonly / :BufOnly [buffer]
+"
+" Without any arguments the current buffer is kept.  With an argument the
+" buffer name/number supplied is kept.
+
+command! -nargs=? -complete=buffer -bang Bonly
+    \ :call BufOnly('<args>', '<bang>')
+command! -nargs=? -complete=buffer -bang BOnly
+    \ :call BufOnly('<args>', '<bang>')
+command! -nargs=? -complete=buffer -bang Bufonly
+    \ :call BufOnly('<args>', '<bang>')
+command! -nargs=? -complete=buffer -bang BufOnly
+    \ :call BufOnly('<args>', '<bang>')
+
+function! BufOnly(buffer, bang)
+	if a:buffer == ''
+		" No buffer provided, use the current buffer.
+		let buffer = bufnr('%')
+	elseif (a:buffer + 0) > 0
+		" A buffer number was provided.
+		let buffer = bufnr(a:buffer + 0)
+	else
+		" A buffer name was provided.
+		let buffer = bufnr(a:buffer)
+	endif
+
+	if buffer == -1
+		echohl ErrorMsg
+		echomsg "No matching buffer for" a:buffer
+		echohl None
+		return
+	endif
+
+	let last_buffer = bufnr('$')
+
+	let delete_count = 0
+	let n = 1
+	while n <= last_buffer
+		if n != buffer && buflisted(n)
+			if a:bang == '' && getbufvar(n, '&modified')
+				echohl ErrorMsg
+				echomsg 'No write since last change for buffer'
+							\ n '(add ! to override)'
+				echohl None
+			else
+				silent exe 'bdel' . a:bang . ' ' . n
+				if ! buflisted(n)
+					let delete_count = delete_count+1
+				endif
+			endif
+		endif
+		let n = n+1
+	endwhile
+
+	if delete_count == 1
+		echomsg delete_count "buffer deleted"
+	elseif delete_count > 1
+		echomsg delete_count "buffers deleted"
+	endif
+
+endfunction
