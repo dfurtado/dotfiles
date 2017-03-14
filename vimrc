@@ -1,7 +1,7 @@
 
 set background=dark
 
-colorscheme madeofcode
+colorscheme skittles_berry 
 
 set tabstop=4
 
@@ -53,6 +53,10 @@ NeoBundle 'Xuyuanp/nerdtree-git-plugin'
 NeoBundle 'jistr/vim-nerdtree-tabs'
 NeoBundle 'asciidoc/vim-asciidoc'
 NeoBundle 'morhetz/gruvbox'
+NeoBundle 'vim-scripts/SyntaxRange'
+NeoBundle 'tpope/vim-markdown'
+NeoBundle 'vim-scripts/ingo-library'
+NeoBundle 'dracula/vim'
 
 call neobundle#end()
 
@@ -70,13 +74,13 @@ let g:airline#extensions#tabline#show_tab_type = 0
 let g:airline#extensions#tabline#fnamemod = ':t'
 
 let g:airline_powerline_fonts = 1
-let g:airline_theme = 'durant'
+let g:airline_theme = 'tomorrow'
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$|\v[\/](node_modules)$',
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$|\v[\/](node_modules)|\v[\/](bower_components)',
   \ 'file': '\v\.(exe|so|dll|swp|pyc|o)$',
   \ }
 
