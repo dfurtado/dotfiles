@@ -1,49 +1,48 @@
+set nocompatible | filetype indent plugin on | syn on
 
-" remove the menu bar
+syntax enable
+
+set autochdir
+
+set splitbelow
+
+set splitright
+
+set autoread
+
+set autowrite
+
 set guioptions-=m
 
-" remove the toolbar
 set guioptions-=T
-
-" enable syntax highlighting
-syntax enable
 
 set background=dark
 
-" status bar always visible
 set laststatus=2
 
-" backspace enabled
 set backspace=2
 
-" writing show line numbers
 set number
 
-" set tabs to have 4 spaces
 set ts=4 sw=4 et
 
-" indent when moving to the next line while writing code
 set autoindent
 
-" expand tabs into spaces
 set expandtab
 
-" when using the >> or << commands, shift lines by 4 spaces
 set shiftwidth=4
 
-" show a visual line under the cursor's current line
 set cursorline
 
-" show the matching part of the pair for [] {} and ()
 set showmatch
 
-" enable all Python syntax highlighting features
-let python_highlight_all = 1
-
 set encoding=utf-8
+
 set runtimepath+=~/.vim/
 
 set guifont=Hack:h11
+
+let python_highlight_all = 1
 
 let mapleader=","
 
@@ -65,7 +64,6 @@ let g:airline_section_y = 'Buffer #%{bufnr("%")}'
 let g:airline#extensions#tabline#fnamemod = ':t'
 
 let g:airline_powerline_fonts = 1
-"let g:airline_theme = 'jellybeans'
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
@@ -91,13 +89,11 @@ call neobundle#begin(expand('~/.vim/bundle/'))
 " Required:
 NeoBundleFetch 'Shougo/neobundle.vim'
 
-" My Bundles here:
 NeoBundle 'bling/vim-airline'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'jistr/vim-nerdtree-tabs'
 NeoBundle 'leafgarland/typescript-vim'
 NeoBundle 'ctrlpvim/ctrlp.vim'
-NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'matze/vim-move'
 NeoBundle 'morhetz/gruvbox'
 NeoBundle 'Xuyuanp/nerdtree-git-plugin'
@@ -108,23 +104,14 @@ NeoBundle 'dracula/vim'
 
 call neobundle#end()
 
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
 NeoBundleCheck
-
-" Required:
-filetype plugin indent on
 
 map <C-n> :NERDTreeTabsToggle<CR>
 
-"list the active buffers.
 nnoremap <F5> :buffers<CR>:buffer<Space>
 
-"remove all the trailing spaces.
 nnoremap <silent> <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
 
-" put this line first in ~/.vimrc
-set nocompatible | filetype indent plugin on | syn on
 
 fun! SetupVAM()
     let c = get(g:, 'vim_addon_manager', {})
@@ -148,21 +135,6 @@ fun! SetupVAM()
 endfun
 call SetupVAM()
 
-" ACTIVATING PLUGINS
-
-" OPTION 1, use VAMActivate
-" VAMActivate PLUGIN_NAME PLUGIN_NAME ..
-
-" OPTION 2: use call vam#ActivateAddons
-" call vam#ActivateAddons([PLUGIN_NAME], {})
-" use <c-x><c-p> to complete plugin names
-
-" OPTION 3: Create a file ~/.vim-scripts putting a PLUGIN_NAME into each line
-" See lazy loading plugins section in README.md for details
-" call vam#Scripts('~/.vim-scripts', {'tag_regex': '.*'})
-
-"ActivateAddons vim-snippets snipmate
-
 " NERDTree settings
 let NERDTreeIgnore = ['\.pyc$']
 let g:nerdtree_tabs_open_on_gui_startup=0
@@ -182,9 +154,11 @@ let g:NERDTreeIndicatorMapCustom = {
             \ }
 
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$|\v[\/](node_modules)$',
-  \ 'file': '\v\.(exe|so|dll|swp|pyc|o)$',
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$|\v[\/](node_modules)$|\v[\/](bower_components)$',
+  \ 'file': '\v\.(exe|so|dll|swp|pyc|o|sln|csproj)$',
   \ }
+
+let g:ctrlp_working_path_mode = 'a'
 
 " BufOnly.vim  -  Delete all the buffers except the current/named buffer.
 "
