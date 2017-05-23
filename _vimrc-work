@@ -1,0 +1,231 @@
+set nocompatible | filetype indent plugin on | syn on
+
+syntax enable
+
+set autochdir
+
+set splitbelow
+
+set splitright
+
+set autoread
+
+set autowrite
+
+set guioptions-=m
+
+set guioptions-=T
+
+set background=dark
+
+set laststatus=2
+
+set backspace=2
+
+set number
+
+set ts=4 sw=4 et
+
+set autoindent
+
+set expandtab
+
+set shiftwidth=4
+
+set cursorline
+
+set showmatch
+
+set encoding=utf-8
+
+set runtimepath+=~/.vim/
+
+set guifont=Hack:h11
+
+let python_highlight_all = 1
+
+let mapleader=","
+
+au BufRead,BufNewFile *.es6 set filetype=javascript
+
+execute pathogen#infect()
+
+colorscheme dracula
+
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#show_splits = 0
+let g:airline#extensions#tabline#show_tabs = 1
+let g:airline#extensions#tabline#show_tab_nr = 0
+let g:airline#extensions#tabline#show_tab_type = 0
+
+let g:airline_section_y = 'Buffer #%{bufnr("%")}'
+
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+let g:airline_powerline_fonts = 1
+
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+
+let g:move_key_modifier = 'C'
+
+" Note: Skip initialization for vim-tiny or vim-small.
+if 0 | endif
+
+if has('vim_starting')
+    if &compatible
+        set nocompatible               " Be iMproved
+    endif
+
+    " Required:
+    set runtimepath+=~/.vim/bundle/neobundle.vim/
+endif
+
+" Required:
+call neobundle#begin(expand('~/.vim/bundle/'))
+
+" Let NeoBundle manage NeoBundle
+" Required:
+NeoBundleFetch 'Shougo/neobundle.vim'
+
+NeoBundle 'bling/vim-airline'
+NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'jistr/vim-nerdtree-tabs'
+NeoBundle 'leafgarland/typescript-vim'
+NeoBundle 'ctrlpvim/ctrlp.vim'
+NeoBundle 'matze/vim-move'
+NeoBundle 'morhetz/gruvbox'
+NeoBundle 'Xuyuanp/nerdtree-git-plugin'
+NeoBundle 'skammer/vim-css-color'
+NeoBundle 'flazz/vim-colorschemes'
+NeoBundle 'vim-airline/vim-airline-themes'
+NeoBundle 'dracula/vim'
+
+call neobundle#end()
+
+NeoBundleCheck
+
+map <C-n> :NERDTreeTabsToggle<CR>
+
+nnoremap <F5> :buffers<CR>:buffer<Space>
+
+nnoremap <silent> <F6> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+
+fun! SetupVAM()
+    let c = get(g:, 'vim_addon_manager', {})
+    let g:vim_addon_manager = c
+    let c.plugin_root_dir = expand('$HOME', 1) . '/.vim/vim-addons'
+
+    " Force your ~/.vim/after directory to be last in &rtp always:
+    " let g:vim_addon_manager.rtp_list_hook = 'vam#ForceUsersAfterDirectoriesToBeLast'
+
+    " most used options you may want to use:
+    " let c.log_to_buf = 1
+    " let c.auto_install = 0
+    let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
+    if !isdirectory(c.plugin_root_dir.'/vim-addon-manager/autoload')
+        execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '
+                    \       shellescape(c.plugin_root_dir.'/vim-addon-manager', 1)
+    endif
+
+    " This provides the VAMActivate command, you could be passing plugin names, too
+    call vam#ActivateAddons([], {})
+endfun
+call SetupVAM()
+
+" NERDTree settings
+let NERDTreeIgnore = ['\.pyc$']
+let g:nerdtree_tabs_open_on_gui_startup=0
+let g:NERDTreeHijackNetrw=0
+let g:NERDTreeDirArrowExpandable = '?'
+let g:NERDTreeDirArrowCollapsible = '?'
+let g:NERDTreeIndicatorMapCustom = {
+            \ "Modified"  : "*",
+            \ "Staged"    : "+",
+            \ "Untracked" : "u",
+            \ "Renamed"   : "?",
+            \ "Unmerged"  : "-",
+            \ "Deleted"   : "X",
+            \ "Dirty"     : "x",
+            \ "Clean"     : "v",
+            \ "Unknown"   : "?"
+            \ }
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$|\v[\/](node_modules)$|\v[\/](bower_components)$',
+  \ 'file': '\v\.(exe|so|dll|swp|pyc|o|sln|csproj)$',
+  \ }
+
+let g:ctrlp_working_path_mode = 'a'
+
+" BufOnly.vim  -  Delete all the buffers except the current/named buffer.
+"
+" Copyright November 2003 by Christian J. Robinson <infynity@onewest.net>
+"
+" Distributed under the terms of the Vim license.  See ":help license".
+"
+" Usage:
+"
+" :Bonly / :BOnly / :Bufonly / :BufOnly [buffer]
+"
+" Without any arguments the current buffer is kept.  With an argument the
+" buffer name/number supplied is kept.
+
+command! -nargs=? -complete=buffer -bang Bonly
+            \ :call BufOnly('<args>', '<bang>')
+command! -nargs=? -complete=buffer -bang BOnly
+            \ :call BufOnly('<args>', '<bang>')
+command! -nargs=? -complete=buffer -bang Bufonly
+            \ :call BufOnly('<args>', '<bang>')
+command! -nargs=? -complete=buffer -bang BufOnly
+            \ :call BufOnly('<args>', '<bang>')
+
+function! BufOnly(buffer, bang)
+    if a:buffer == ''
+        " No buffer provided, use the current buffer.
+        let buffer = bufnr('%')
+    elseif (a:buffer + 0) > 0
+        " A buffer number was provided.
+        let buffer = bufnr(a:buffer + 0)
+    else
+        " A buffer name was provided.
+        let buffer = bufnr(a:buffer)
+    endif
+
+    if buffer == -1
+        echohl ErrorMsg
+        echomsg "No matching buffer for" a:buffer
+        echohl None
+        return
+    endif
+
+    let last_buffer = bufnr('$')
+
+    let delete_count = 0
+    let n = 1
+    while n <= last_buffer
+        if n != buffer && buflisted(n)
+            if a:bang == '' && getbufvar(n, '&modified')
+                echohl ErrorMsg
+                echomsg 'No write since last change for buffer'
+                            \ n '(add ! to override)'
+                echohl None
+            else
+                silent exe 'bdel' . a:bang . ' ' . n
+                if ! buflisted(n)
+                    let delete_count = delete_count+1
+                endif
+            endif
+        endif
+        let n = n+1
+    endwhile
+
+    if delete_count == 1
+        echomsg delete_count "buffer deleted"
+    elseif delete_count > 1
+        echomsg delete_count "buffers deleted"
+    endif
+
+endfunction
