@@ -1,0 +1,151 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: My emacs configuration
+#+DATE: <2017-09-22 Fri>
+#+AUTHOR: Daniel Furtado
+#+EMAIL: daniel@dfurtado.com
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 24.4.1 (Org mode 9.0.3)
+
+* Theme
+#+BEGIN_SRC emacs-lisp
+  (load-theme 'cyberpunk t)
+  ;;(load-theme 'solarized-dark t)
+#+END_SRC
+
+* Load/install require packages
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit)
+#+END_SRC
+
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :config
+    (projectile-global-mode)
+    (setq projectile-switch-project-action 'helm-projectile-find-file)
+    (helm-projectile-on))
+#+END_SRC
+** Dashboard
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :config
+    (dashboard-setup-startup-hook)
+    (setq dashboard-items '((recents  . 5)
+                            (bookmarks . 5)
+                            (projects . 5))))
+#+END_SRC
+** Windmove
+#+BEGIN_SRC emacs-lisp
+  (use-package windmove
+    :config
+    (when (fboundp 'windmove-default-keybindings)
+      (windmove-default-keybindings)))
+#+END_SRC
+
+** Jedi
+#+BEGIN_SRC emacs-lisp
+;;  (require 'jedi)
+#+END_SRC
+
+** Elpy
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :config
+    (elpy-enable)
+    (setq elpy-rpc-backend "jedi")
+    (define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand))
+#+END_SRC
+
+** Whitespace cleanup
+#+BEGIN_SRC emacs-lisp
+(add-hook 'before-save-hook 'whitespace-cleanup)
+#+END_SRC
+
+** Org Bullets
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (org-bullets-mode t)))
+#+END_SRC
+
+* Misc config
+#+BEGIN_SRC emacs-lisp
+(setq ring-bell-function 'ignore)
+(setq python-indent-offset 4)
+
+(when (fboundp 'winner-mode)
+  (winner-mode 1))
+#+END_SRC
+
+* Org mode
+#+BEGIN_SRC emacs-lisp
+  (setq org-ellipsis "⤵")
+  (setq org-fontify-done-headline t)
+  (setq org-fontify-quote-and-verse-blocks t)
+  (setq org-fontify-whole-heading-line t)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (org-bullets-mode t)))
+#+END_SRC
+
+* Ido mode
+#+BEGIN_SRC emacs-lisp
+(setq ido-create-new-buffer 'always)
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+#+END_SRC
+
+* Custom functions
+** IRC
+#+BEGIN_SRC emacs-lisp
+(defun irc ()
+    "Connect to the freenode"
+    (interactive)
+    (erc :server "irc.freenode.net"
+         :port 6667
+         :nick "retro-programmer"
+         :password ""))
+#+END_SRC
+
+* Key bindings
+** helm
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x f") 'helm-find)
+(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "C-x l") 'magit-log)
+#+END_SRC
+** custom functions
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c i") 'irc)
+(global-set-key (kbd "C-c g") 'magit-status)
+(global-set-key (kbd "C-c l") 'magit-log)
+#+END_SRC
+* Font settings
+#+BEGIN_SRC emacs-lisp
+  (set-default-font "Hack-12")
+#+END_SRC
+* Misc
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+* Hooks
+#+BEGIN_SRC emacs-lisp
+  ;;(add-hook 'javascript-mode-hook
+  ;;      (lambda ()
+  ;;        (setq-default indent-tabs-mode nil)
+  ;;        (setq js-indent-level 4)))
+
+  ;;(add-hook 'jsx-mode-hook
+  ;;      (lambda ()
+  ;;        (setq-default indent-tabs-mode nil)
+  ;;        (setq js-indent-level 4)))
+#+END_SRC
