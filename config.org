@@ -12,16 +12,48 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 24.4.1 (Org mode 9.0.3)
 
+* Init
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'custom-theme-load-path "/home/daniel/.emacs.d/themes")
+  (setq ring-bell-function 'ignore)
+  (setq python-indent-offset 4)
+
+  (highlight-indentation-mode 0)
+  (setq-default indent-tabs-mode nil)
+
+  (set-default-font "-*-Hack-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+
+  (when (fboundp 'winner-mode)
+      (winner-mode 1))
+#+END_SRC
+
 * Theme
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'cyberpunk t)
-  ;;(load-theme 'solarized-dark t)
+  (use-package base16-theme
+    :config
+    (load-theme 'base16-flat t))
 #+END_SRC
 
 * Load/install require packages
+** Evil
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+    :config
+    (evil-mode 1))
+#+END_SRC
+** Evil surround
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-surround
+    :config
+    (global-evil-surround-mode 1))
+#+END_SRC
 ** Magit
 #+BEGIN_SRC emacs-lisp
-  (use-package magit)
+  (use-package magit
+    :config
+    (global-set-key (kbd "C-x l") 'magit-log)
+    (global-set-key (kbd "C-x g") 'magit-status)
+    (global-set-key (kbd "C-x M-g") 'magit-dispatch-popup))
 #+END_SRC
 
 ** Projectile
@@ -49,11 +81,6 @@
       (windmove-default-keybindings)))
 #+END_SRC
 
-** Jedi
-#+BEGIN_SRC emacs-lisp
-;;  (require 'jedi)
-#+END_SRC
-
 ** Elpy
 #+BEGIN_SRC emacs-lisp
   (use-package elpy
@@ -71,23 +98,22 @@
 ** Org Bullets
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets)
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (org-bullets-mode t)))
 #+END_SRC
 
-* Misc config
+** Helm
 #+BEGIN_SRC emacs-lisp
-(setq ring-bell-function 'ignore)
-(setq python-indent-offset 4)
-
-(when (fboundp 'winner-mode)
-  (winner-mode 1))
+  (use-package helm
+    :config
+    (global-set-key (kbd "C-x f") 'helm-find))
 #+END_SRC
-
+** Virtualenvwrapper
+#+BEGIN_SRC emacs-lisp
+  (use-package virtualenvwrapper
+    :config
+    (setq venv-location "/home/daniel/.virtualenvs"))
+#+END_SRC
 * Org mode
 #+BEGIN_SRC emacs-lisp
-  (setq org-ellipsis "⤵")
   (setq org-fontify-done-headline t)
   (setq org-fontify-quote-and-verse-blocks t)
   (setq org-fontify-whole-heading-line t)
@@ -96,14 +122,29 @@
               (org-bullets-mode t)))
 #+END_SRC
 
-* Ido mode
+* Helm mode
 #+BEGIN_SRC emacs-lisp
-(setq ido-create-new-buffer 'always)
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode 1)
-#+END_SRC
+  (global-set-key (kbd "M-x") #'helm-M-x)
+  (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
+  (global-set-key (kbd "C-x C-f") #'helm-find-files)
 
+  (helm-mode 1)
+#+END_SRC
+* Airline
+#+BEGIN_SRC emacs-lisp
+  (use-package airline-themes
+    :config
+    (setq powerline-utf-8-separator-left        #xe0b0
+          powerline-utf-8-separator-right       #xe0b2
+          airline-utf-glyph-separator-left      #xe0b0
+          airline-utf-glyph-separator-right     #xe0b2
+          airline-utf-glyph-subseparator-left   #xe0b1
+          airline-utf-glyph-subseparator-right  #xe0b3
+          airline-utf-glyph-branch              #xe0a0
+          airline-utf-glyph-readonly            #xe0a2
+          airline-utf-glyph-linenumber          #xe0a1)
+    (load-theme 'airline-doom-one t))
+#+END_SRC
 * Custom functions
 ** IRC
 #+BEGIN_SRC emacs-lisp
@@ -115,37 +156,21 @@
          :nick "retro-programmer"
          :password ""))
 #+END_SRC
-
-* Key bindings
-** helm
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x f") 'helm-find)
-(global-set-key (kbd "C-x g") 'magit-status)
-(global-set-key (kbd "C-x l") 'magit-log)
-#+END_SRC
+* Key Bindings
 ** custom functions
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c i") 'irc)
-(global-set-key (kbd "C-c g") 'magit-status)
-(global-set-key (kbd "C-c l") 'magit-log)
 #+END_SRC
-* Font settings
-#+BEGIN_SRC emacs-lisp
-  (set-default-font "Hack-12")
-#+END_SRC
-* Misc
-#+BEGIN_SRC emacs-lisp
-  (setq-default indent-tabs-mode nil)
-#+END_SRC
-* Hooks
-#+BEGIN_SRC emacs-lisp
-  ;;(add-hook 'javascript-mode-hook
-  ;;      (lambda ()
-  ;;        (setq-default indent-tabs-mode nil)
-  ;;        (setq js-indent-level 4)))
 
-  ;;(add-hook 'jsx-mode-hook
-  ;;      (lambda ()
-  ;;        (setq-default indent-tabs-mode nil)
-  ;;        (setq js-indent-level 4)))
+** Frames
+#+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+     (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+     (global-set-key (kbd "S-C-<down>") 'shrink-window)
+     (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+#+END_SRC
+** Misc
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c w") 'whitespace-mode)
+  (global-set-key (kbd "C-c t") 'removetabs)
 #+END_SRC
