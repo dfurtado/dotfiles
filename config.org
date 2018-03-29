@@ -22,16 +22,15 @@
   (setq-default indent-tabs-mode nil)
 
   (set-default-font "-*-Hack-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
-
   (when (fboundp 'winner-mode)
-      (winner-mode 1))
+    (winner-mode 1))
 #+END_SRC
 
 * Theme
 #+BEGIN_SRC emacs-lisp
   (use-package base16-theme
     :config
-    (load-theme 'base16-flat t))
+    (load-theme 'base16-gruvbox-dark-pale t))
 #+END_SRC
 
 * Load/install require packages
@@ -112,6 +111,13 @@
     :config
     (setq venv-location "/home/daniel/.virtualenvs"))
 #+END_SRC
+
+** Golden ratio
+#+BEGIN_SRC emacs-lisp
+  (use-package golden-ratio
+    :config
+    (golden-ratio-mode 1))
+#+END_SRC
 * Org mode
 #+BEGIN_SRC emacs-lisp
   (setq org-fontify-done-headline t)
@@ -143,7 +149,7 @@
           airline-utf-glyph-branch              #xe0a0
           airline-utf-glyph-readonly            #xe0a2
           airline-utf-glyph-linenumber          #xe0a1)
-    (load-theme 'airline-doom-one t))
+    (load-theme 'airline-ubaryd t))
 #+END_SRC
 * Custom functions
 ** IRC
