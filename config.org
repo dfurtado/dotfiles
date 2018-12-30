@@ -12,18 +12,45 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 24.4.1 (Org mode 9.0.3)
 
+* Package setup
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+
+  (setq package-enable-at-startup nil)
+
+  (add-to-list 'package-archives
+               '("melpa" . "http://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives
+               '("melpa-unstable" . "http://melpa.org/packages/") t)
+  (add-to-list 'package-archives
+               '("gnu" . "http://elpa.gnu.org/packages/") t)
+
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+
+  (setq use-package-always-ensure t)
+#+END_SRC
+
 * Init
 #+BEGIN_SRC emacs-lisp
+  (require 'bind-key)
+  (require 'xref)
+
   (add-to-list 'custom-theme-load-path "/home/daniel/.emacs.d/themes")
+
   (setq ring-bell-function 'ignore)
   (setq python-indent-offset 4)
-
-  (highlight-indentation-mode 0)
   (setq-default indent-tabs-mode nil)
 
   (set-default-font "-*-Hack-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1")
+
   (when (fboundp 'winner-mode)
-    (winner-mode 1))
+      (winner-mode 1))
 #+END_SRC
 
 * Theme
@@ -32,29 +59,61 @@
     :config
     (load-theme 'base16-atelier-lakeside t))
 #+END_SRC
-
 * Load/install require packages
+** which-key
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :init
+    (setq which-key-separator " ")
+    (setq which-key-prefix-prefix "+")
+    :config
+    (which-key-mode 1))
+#+END_SRC
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :init
+    (yas-global-mode))
+
+  (use-package yasnippet-snippets
+    :after yasnippet)
+#+END_SRC
+** highlight indentation mode
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-indentation
+    :init
+    (highlight-indentation-mode 0))
+#+END_SRC
+** Diminish
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish
+    :config
+    (diminish 1))
+#+END_SRC
 ** Evil
 #+BEGIN_SRC emacs-lisp
   (use-package evil
+    :ensure t
     :init
+    (setq evil-want-integration nil)
     (setq evil-want-keybinding nil)
     :config
     (evil-mode 1))
 #+END_SRC
+** Evil collection
+#+BEGIN_SRC emacs-lisp
+  ;;(use-package evil-collection
+  ;;  :after evil
+  ;;  :config
+  ;;  (evil-collection-init))
+#+END_SRC
 ** Evil surround
 #+BEGIN_SRC emacs-lisp
   (use-package evil-surround
+    :after evil-collection
     :config
     (global-evil-surround-mode 1))
-#+END_SRC
-** Evil collection
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-collection
-    :after evil
-    :ensure t
-    :config
-    (evil-collection-init))
 #+END_SRC
 
 ** Magit
@@ -69,9 +128,25 @@
 ** Helm
 #+BEGIN_SRC emacs-lisp
   (use-package helm
+    :ensure t
+    :init
+    (setq helm-M-x-fuzzy-match t
+    helm-mode-fuzzy-match t
+    helm-buffers-fuzzy-matching t
+    helm-recentf-fuzzy-match t
+    helm-locate-fuzzy-match t
+    helm-semantic-fuzzy-match t
+    helm-imenu-fuzzy-match t
+    helm-completion-in-region-fuzzy-match t
+    helm-candidate-number-list 150
+    helm-split-window-in-side-p t
+    helm-move-to-line-cycle-in-source t
+    helm-echo-input-in-header-line t
+    helm-autoresize-max-height 0
+    helm-autoresize-min-height 20)
     :config
+    (helm-mode 1)
     (global-set-key (kbd "C-x f") 'helm-find))
-  (diminish 'helm-mode)
 #+END_SRC
 ** Projectile
 #+BEGIN_SRC emacs-lisp
@@ -79,7 +154,6 @@
     :config
     (projectile-global-mode)
     (setq projectile-switch-project-action 'helm-projectile-find-file))
-  (diminish 'projectile-mode)
 #+END_SRC
 ** helm-projectile
 #+BEGIN_SRC emacs-lisp
@@ -112,7 +186,6 @@
     (elpy-enable)
     (setq elpy-rpc-backend "jedi")
     (define-key yas-minor-mode-map (kbd "C-c k") 'yas-expand))
-  (diminish 'elpy-mode)
 #+END_SRC
 
 ** Whitespace cleanup
@@ -126,9 +199,9 @@
 #+END_SRC
 ** Virtualenvwrapper
 #+BEGIN_SRC emacs-lisp
-  (use-package virtualenvwrapper
-    :config
-    (setq venv-location "/home/daniel/.virtualenvs"))
+  ;;(use-package virtualenvwrapper
+  ;;  :config
+  ;;  (setq venv-location "/home/daniel/.virtualenvs"))
 #+END_SRC
 
 ** Golden ratio
@@ -136,10 +209,10 @@
   (use-package golden-ratio
     :config
     (golden-ratio-mode 1))
-  (diminish 'golden-ratio-mode)
 #+END_SRC
 ** Smart mode line
 #+BEGIN_SRC emacs-lisp
+(use-package smart-mode-line-atom-one-dark-theme)
 (use-package smart-mode-line
     :config
     (setq sml/no-confirm-load-theme t)
@@ -163,7 +236,6 @@
   (global-set-key (kbd "C-x r b") #'helm-filtered-bookmarks)
   (global-set-key (kbd "C-x C-f") #'helm-find-files)
   (helm-mode 1)
-  (diminish 'helm-mode)
 #+END_SRC
 * Airline
 #+BEGIN_SRC emacs-lisp
@@ -304,13 +376,12 @@
   (global-set-key (kbd "C-x C-t") 'toggle-window-split)
   (global-set-key (kbd "<f7>") 'xah-new-empty-buffer)
 #+END_SRC
-
 ** Frames
 #+BEGIN_SRC emacs-lisp
-     (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-     (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
-     (global-set-key (kbd "S-C-<down>") 'shrink-window)
-     (global-set-key (kbd "S-C-<up>") 'enlarge-window)
+  (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+  (global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+  (global-set-key (kbd "S-C-<down>") 'shrink-window)
+  (global-set-key (kbd "S-C-<up>") 'enlarge-window)
 #+END_SRC
 ** Misc
 #+BEGIN_SRC emacs-lisp
@@ -336,8 +407,6 @@
                   (lambda ()
                     (interactive)
                     (ignore-errors (backward-char 5))))
-
-
 #+END_SRC
 ** helm projectile
 #+BEGIN_SRC emacs-lisp
@@ -350,4 +419,9 @@
 #+BEGIN_SRC emacs-lisp
   (diminish 'undo-tree-mode)
   (diminish 'auto-revert-mode)
+  (diminish 'helm-mode)
+  (diminish 'projectile-mode)
+  (diminish 'elpy-mode)
+  (diminish 'golden-ratio-mode)
+  (diminish 'which-key-mode)
 #+END_SRC

@@ -1,3 +1,9 @@
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (when window-system
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -7,25 +13,6 @@
 (setq inhibit-startup-message t)
 (setq initial-scratch-message "")
 
-(require 'package)
-(add-to-list 'package-archives
-	     '("melpa" . "http://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-	     '("gnu" . "http://elpa.gnu.org/packages/") t)
-
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-content)
-  (package-install 'use-package))
-
-(eval-when-compile
-  (require 'use-package))
-(require 'diminish)
-(require 'bind-key)
-
-(setq use-package-always-ensure t)
-
 (setq vc-follow-symlinks "t") ; prevent prompt when loading org file
 (org-babel-load-file (expand-file-name "config.org" user-emacs-directory))
 (custom-set-variables
@@ -33,15 +20,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(safe-local-variable-values
+ '(package-selected-packages
    (quote
-    ((eval when
-	   (fboundp
-	    (quote rainbow-mode))
-	   (rainbow-mode 1))))))
+    (smart-mode-line-atom-one-dark-theme golden-ratio org-bullets elpy dashboard helm-projectile projectile helm magit evil-surround evil diminish highlight-indentation base16-theme use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 127 :width normal :foundry "unknown" :family "Hack")))))
+ )
