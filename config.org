@@ -38,6 +38,12 @@
 
 * Init
 #+BEGIN_SRC emacs-lisp
+  (setq show-paren-delay 0)
+  (show-paren-mode 1)
+
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+
   (require 'bind-key)
   (require 'xref)
 
@@ -50,7 +56,7 @@
   (set-default-font "-*-Hack-normal-normal-normal-*-18-*-*-*-m-0-iso10646-1")
 
   (when (fboundp 'winner-mode)
-      (winner-mode 1))
+    (winner-mode 1))
 #+END_SRC
 
 * Theme
@@ -60,6 +66,13 @@
     (load-theme 'base16-atelier-lakeside t))
 #+END_SRC
 * Load/install require packages
+** modes
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode)
+  (use-package yaml-mode)
+  (use-package markdown-mode)
+  (use-package restclient)
+#+END_SRC
 ** which-key
 #+BEGIN_SRC emacs-lisp
   (use-package which-key
