@@ -58,6 +58,11 @@
 
   (when (fboundp 'winner-mode)
     (winner-mode 1))
+
+  (require 'mode-icons)
+  (mode-icons-mode)
+
+  (setq column-number-mode t)
 #+END_SRC
 
 * Theme
@@ -67,6 +72,12 @@
     (load-theme 'base16-atelier-lakeside t))
 #+END_SRC
 * Load/install require packages
+** dimmer
+#+BEGIN_SRC emacs-lisp
+  (use-package dimmer
+    :init
+    (dimmer-mode))
+#+END_SRC
 ** yasnippets
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
@@ -81,6 +92,8 @@
   (use-package yaml-mode)
   (use-package markdown-mode)
   (use-package restclient)
+  (use-package dockerfile-mode)
+  (use-package docker-compose-mode)
 #+END_SRC
 ** which-key
 #+BEGIN_SRC emacs-lisp
@@ -446,4 +459,6 @@
   (diminish 'elpy-mode)
   (diminish 'golden-ratio-mode)
   (diminish 'which-key-mode)
+  (diminish 'abbrev-mode)
+  (diminish 'highlight-indentation-mode)
 #+END_SRC
