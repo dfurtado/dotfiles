@@ -1,0 +1,12 @@
+[init]
+	defaultBranch = main
+[user]
+	email = 2665769+dfurtado@users.noreply.github.com
+	name = Daniel Furtado
+[core]
+    editor = vim
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    cm = commit
