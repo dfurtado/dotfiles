@@ -1,0 +1,16 @@
+theme = Catppuccin Mocha
+font-family = FiraCode Nerd Font
+
+shell-integration-features = no-cursor
+cursor-style = block
+cursor-style-blink = true
+
+#background-opacity = 0.9
+#background-blur = true
+
+keybind = ctrl+alt+k=goto_split:up
+keybind = ctrl+alt+j=goto_split:down
+keybind = ctrl+alt+l=goto_split:left
+keybind = ctrl+alt+h=goto_split:right
+
+
